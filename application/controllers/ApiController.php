@@ -5,14 +5,23 @@ require APPPATH . '/libraries/REST_Controller.php';
  *
  */
 class ApiController extends REST_Controller {
-    public function pagos_get(){
-        $this->response([
-            'status'=>'success',
-            'method'=>$_SERVER['REQUEST_METHOD']
-        ]);
+
+    function __construct(){
+        parent::__construct();
+        $this->load->model('pago');
     }
 
-    public function pagos_post(){
+    public function index_get(){
+        $array_out = $this->pago->listarTodosCantidad();
+        $this->response($array_out);
+    }
+
+    public function importe_get(){
+        $array_out = $this->pago->listarTodosImporte();
+        $this->response($array_out);
+    }
+
+    public function pago_post(){
         $this->response([
             'status'=>'success',
             'method'=>$_SERVER['REQUEST_METHOD']
