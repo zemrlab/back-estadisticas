@@ -12,14 +12,30 @@ class ApiController extends REST_Controller {
     }
 
     public function index_get(){
-        $array_out = $this->pago->listarTodosCantidad();
+        $fecha_inicio = $this->get('inicio');
+        $fecha_fin = $this->get('fin');
+        if($fecha_inicio == '' || $fecha_fin == ''){
+            $array_out = $this->pago->listarTodosCantidad();
+        }
+        else{
+            $array_out = $this->pago->listarPorFechasCantidad($fecha_inicio, $fecha_fin);
+        }
         $this->response($array_out);
     }
 
     public function importe_get(){
-        $array_out = $this->pago->listarTodosImporte();
+        $fecha_inicio = $this->get('inicio');
+        $fecha_fin = $this->get('fin');
+        if($fecha_inicio == '' || $fecha_fin == ''){
+            $array_out = $this->pago->listarTodosImporte();
+        }
+        else{
+            $array_out = $this->pago->listarPorFechasImporte($fecha_inicio, $fecha_fin);
+        }
         $this->response($array_out);
     }
+
+
 
     public function pago_post(){
         $this->response([
