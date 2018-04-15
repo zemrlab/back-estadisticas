@@ -51,12 +51,13 @@ class Pago extends CI_Model
                 $array_out['labels'][] = $concepto['concepto'];
                 $dataset['data'][] = $concepto['cantidad'];
             }
-            $array_out['datasets'][] = $dataset;
+
         }
+        $array_out['datasets'][] = $dataset;
         return $array_out;
     }
 
-    public function listarPorFechasImporte(){
+    public function listarPorFechasImporte($fecha_inicio, $fecha_fin){
         $query = $this->db->query('SELECT concepto, SUM(importe) AS cantidad FROM pago WHERE (UNIX_TIMESTAMP(fecha) >= '.$fecha_inicio.' AND UNIX_TIMESTAMP(fecha) <= '.$fecha_fin.') GROUP BY pago.concepto');
         $data = $query->result_array();
         $array_out = array('labels'=>array(),'datasets'=>array());
@@ -67,8 +68,8 @@ class Pago extends CI_Model
                 $array_out['labels'][] = $concepto['concepto'];
                 $dataset['data'][] = $concepto['cantidad'];
             }
-            $array_out['datasets'][] = $dataset;
         }
+        $array_out['datasets'][] = $dataset;
         return $array_out;
     }
 
