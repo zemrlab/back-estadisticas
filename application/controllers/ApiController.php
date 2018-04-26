@@ -15,7 +15,7 @@ class ApiController extends REST_Controller {
         $fecha_inicio = $this->get('inicio');
         $fecha_fin = $this->get('fin');
         if($fecha_inicio == '' || $fecha_fin == ''){
-            $array_out = $this->pago->listarTodosCantidad();
+            $array_out = array("result"=>"error");
         }
         else{
             $array_out = $this->pago->listarPorFechasCantidad($fecha_inicio, $fecha_fin);
@@ -27,7 +27,7 @@ class ApiController extends REST_Controller {
         $fecha_inicio = $this->get('inicio');
         $fecha_fin = $this->get('fin');
         if($fecha_inicio == '' || $fecha_fin == ''){
-            $array_out = $this->pago->listarTodosImporte();
+            $array_out = array("result"=>"error");
         }
         else{
             $array_out = $this->pago->listarPorFechasImporte($fecha_inicio, $fecha_fin);
@@ -35,7 +35,26 @@ class ApiController extends REST_Controller {
         $this->response($array_out);
     }
 
-
+    public function devolverAnioImporte_get(){
+        $year = $this->get("year");
+        if($year == ""){
+            $array_out = array("result"=>"error");
+        }
+        else{
+            $array_out = $this->pago->listarAnioImporte($year);
+        }
+        $this->response($array_out);
+    }
+    public function devolverAnioCantidad_get(){
+        $year = $this->get("year");
+        if($year == ""){
+            $array_out = array("result"=>"error");
+        }
+        else{
+            $array_out = $this->pago->listarAnioCantidad($year);
+        }
+        $this->response($array_out);
+    }
 
     public function pago_post(){
         $this->response([
