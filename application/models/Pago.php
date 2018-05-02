@@ -43,14 +43,14 @@ class Pago extends CI_Model
     public function listarPorFechasCantidad($fecha_inicio, $fecha_fin){
         $query = $this->db->query('SELECT c.concepto AS concepto, COUNT(r.id_concepto) AS cantidad FROM public.recaudaciones r INNER JOIN public.concepto c ON (r.id_concepto = c.id_concepto) WHERE ( extract(epoch FROM r.fecha) >= '.$fecha_inicio.' AND extract(epoch FROM r.fecha) <= '.$fecha_fin.') GROUP BY r.id_concepto,c.concepto ORDER BY c.concepto');
         $data = $query->result_array();
-        $array_out = $this->formatoGrafico($data);
+        $array_out = $this->formatoGrafico($data,'Importes');
         return $array_out;
     }
 
     public function listarPorFechasImporte($fecha_inicio, $fecha_fin){
         $query = $this->db->query('SELECT c.concepto AS concepto, SUM(r.importe) AS cantidad FROM public.recaudaciones r INNER JOIN public.concepto c ON (r.id_concepto = c.id_concepto) WHERE ( extract(epoch FROM r.fecha) >= '.$fecha_inicio.' AND extract(epoch FROM r.fecha) <= '.$fecha_fin.') GROUP BY r.id_concepto,c.concepto ORDER BY c.concepto');
         $data = $query->result_array();
-        $array_out = $this->formatoGrafico($data);
+        $array_out = $this->formatoGrafico($data,'Monto');
         return $array_out;
     }
 
@@ -63,7 +63,7 @@ class Pago extends CI_Model
             GROUP BY concepto"
         );
         $data = $query->result_array();
-        $array_out = $this->formatoGrafico($data);
+        $array_out = $this->formatoGrafico($data,'Importes');
         return $array_out;
     }
     public function test(){
@@ -79,7 +79,7 @@ class Pago extends CI_Model
             GROUP BY concepto"
         );
         $data = $query->result_array();
-        $array_out = $this->formatoGrafico($data);
+        $array_out = $this->formatoGrafico($data,'Monto');
         return $array_out;
     }
 
@@ -111,9 +111,9 @@ class Pago extends CI_Model
         return $array_out;
     }
 
-    private function formatoGrafico($data){
+    private function formatoGrafico($data,$etiqueta){
         $array_out = array('labels'=>array(),'datasets'=>array());
-        $dataset = array('label'=>'transacciones','data'=>array());
+        $dataset = array('label'=>$etiqueta,'data'=>array());
         if(count($data)>0){
             foreach ($data as $concepto) {
 
