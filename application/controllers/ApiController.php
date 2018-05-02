@@ -56,11 +56,27 @@ class ApiController extends REST_Controller {
         $this->response($array_out);
     }
 
-    public function pago_post(){
-        $this->response([
-            'status'=>'success',
-            'method'=>$_SERVER['REQUEST_METHOD']
-        ]);
+    public function tablaFechas_get(){
+        $fecha_inicio = $this->get('inicio');
+        $fecha_fin = $this->get('fin');
+        if($fecha_inicio == '' || $fecha_fin == ''){
+            $array_out = array("result"=>"error1");
+        }
+        else{
+            $array_out = $this->pago->registrosPorFechas($fecha_inicio, $fecha_fin);
+        }
+        $this->response($array_out);
+    }
+
+    public function tablaYear_get(){
+        $year = $this->get("year");
+        if($year == ""){
+            $array_out = array("result"=>"error");
+        }
+        else{
+            $array_out = $this->pago->registrosPorAnio($year);
+        }
+        $this->response($array_out);
     }
 }
 

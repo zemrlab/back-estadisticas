@@ -43,15 +43,31 @@ class Pago extends CI_Model
     public function listarPorFechasCantidad($fecha_inicio, $fecha_fin){
         $query = $this->db->query('SELECT c.concepto AS concepto, COUNT(r.id_concepto) AS cantidad FROM public.recaudaciones r INNER JOIN public.concepto c ON (r.id_concepto = c.id_concepto) WHERE ( extract(epoch FROM r.fecha) >= '.$fecha_inicio.' AND extract(epoch FROM r.fecha) <= '.$fecha_fin.') GROUP BY r.id_concepto,c.concepto ORDER BY c.concepto');
         $data = $query->result_array();
-        $array_out = $this->formato($data);
+        $array_out = $this->formatoGrafico($data);
         return $array_out;
     }
 
     public function listarPorFechasImporte($fecha_inicio, $fecha_fin){
         $query = $this->db->query('SELECT c.concepto AS concepto, SUM(r.importe) AS cantidad FROM public.recaudaciones r INNER JOIN public.concepto c ON (r.id_concepto = c.id_concepto) WHERE ( extract(epoch FROM r.fecha) >= '.$fecha_inicio.' AND extract(epoch FROM r.fecha) <= '.$fecha_fin.') GROUP BY r.id_concepto,c.concepto ORDER BY c.concepto');
         $data = $query->result_array();
-        $array_out = $this->formato($data);
+        $array_out = $this->formatoGrafico($data);
         return $array_out;
+    }
+
+    public function listarAnioCantidad($year){
+        $query = $this->db->query(
+            "SELECT to_char(to_timestamp(date_part('month',fecha)::text,'MM'),'Month') AS concepto,
+                    COUNT(importe) AS cantidad
+            FROM public.recaudaciones
+            WHERE date_part('year',fecha) = ".$year."
+            GROUP BY concepto"
+        );
+        $data = $query->result_array();
+        $array_out = $this->formatoGrafico($data);
+        return $array_out;
+    }
+    public function test(){
+        return "hola";
     }
 
     public function listarAnioImporte($year){
@@ -63,26 +79,39 @@ class Pago extends CI_Model
             GROUP BY concepto"
         );
         $data = $query->result_array();
-        $array_out = $this->formato($data);
+        $array_out = $this->formatoGrafico($data);
         return $array_out;
-    }
-    public function listarAnioCantidad($year){
-        $query = $this->db->query(
-            "SELECT to_char(to_timestamp(date_part('month',fecha)::text,'MM'),'Month') AS concepto,
-                    COUNT(importe) AS cantidad
-            FROM public.recaudaciones
-            WHERE date_part('year',fecha) = ".$year."
-            GROUP BY concepto"
-        );
-        $data = $query->result_array();
-        $array_out = $this->formato($data);
-        return $array_out;
-    }
-    public function test(){
-        return "hola";
     }
 
-    private function formato($data){
+    public function registrosPorFechas($fecha_inicio, $fecha_fin){
+        $query = $this->db->query("SELECT c.concepto AS concepto, r.importe AS importe, trim(a.codigo) AS codigoAlumno, a.ape_nom AS nombreAlumno, r.fecha 
+            FROM public.recaudaciones r 
+                INNER JOIN public.concepto c 
+                    ON (r.id_concepto = c.id_concepto)
+                INNER JOIN public.alumno a 
+                    ON (r.id_alum = a.id_alum) 
+            WHERE ( extract(epoch FROM r.fecha) >= ".$fecha_inicio." AND extract(epoch FROM r.fecha) <= ".$fecha_fin.")
+            ORDER BY r.fecha");
+        $data = $query->result_array();
+        $array_out = $this->formatoTabla($data);
+        return $array_out;
+    }
+
+    public function registrosPorAnio($year){
+        $query=$this->db->query("SELECT c.concepto AS concepto, r.importe AS importe, trim(a.codigo) AS codigoAlumno, a.ape_nom AS nombreAlumno, r.fecha 
+            FROM public.recaudaciones r 
+                INNER JOIN public.concepto c 
+                    ON (r.id_concepto = c.id_concepto)
+                INNER JOIN public.alumno a 
+                    ON (r.id_alum = a.id_alum) 
+            WHERE date_part('year',fecha) = ".$year."
+            ORDER BY r.fecha");
+        $data = $query->result_array();
+        $array_out = $this->formatoTabla($data);
+        return $array_out;
+    }
+
+    private function formatoGrafico($data){
         $array_out = array('labels'=>array(),'datasets'=>array());
         $dataset = array('label'=>'transacciones','data'=>array());
         if(count($data)>0){
@@ -94,6 +123,16 @@ class Pago extends CI_Model
 
         }
         $array_out['datasets'][] = $dataset;
+        return $array_out;
+    }
+
+    private function formatoTabla($data){
+        $array_out = array();
+        if(count($data)>0){
+            foreach ($data as $registro) {
+                $array_out[] = $registro;
+            }
+        }
         return $array_out;
     }
 }
