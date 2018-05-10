@@ -74,10 +74,10 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 $db['default'] = array(
-	'dsn'	=> 'pgsql:host=sigap.postgres.database.azure.com;port=5432;dbname=tcs;user=sigap@sigap;password=Taller123',
-	'hostname' => 'sigap.postgres.database.azure.com',
-	'username' => 'sigap@sigap',
-	'password' => 'Taller123',
+	'dsn'	=> 'pgsql:host=sigap-second.cbzwydm3f2if.sa-east-1.rds.amazonaws.com;port=5432;dbname=tcs;user=postgres;password=postgres',
+	'hostname' => 'sigap-second.cbzwydm3f2if.sa-east-1.rds.amazonaws.com',
+	'username' => 'postgres',
+	'password' => 'postgres',
 	'database' => 'tcs',
 	'dbdriver' => 'pdo',
 	'dbprefix' => '',
