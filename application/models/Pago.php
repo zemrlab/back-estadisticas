@@ -76,7 +76,7 @@ class Pago extends CI_Model
 
     public function listarAnioCantidad($year){
         $query = $this->db->query(
-            "SELECT to_char(to_timestamp(date_part('month',r.fecha)::text,'MM'),'Month') AS concepto,
+            "SELECT date_part('month',r.fecha) AS concepto,
                     COUNT(r.importe) AS cantidad
             FROM public.recaudaciones r
             INNER JOIN public.concepto c ON (r.id_concepto = c.id_concepto) 
@@ -85,11 +85,12 @@ class Pago extends CI_Model
                 date_part('year',fecha) = ".$year."
                 AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
             )
-            GROUP BY to_char(to_timestamp(date_part('month',r.fecha)::text,'MM'),'Month')"
+            GROUP BY date_part('month',r.fecha)"
         );
         $data = $query->result_array();
         $array_out = $this->formatoGrafico($data,'Importes');
-        return $array_out;
+        $f_array_out = $this->formatoFecha($array_out);
+        return $f_array_out;
     }
     public function test(){
         return "hola";
@@ -97,7 +98,7 @@ class Pago extends CI_Model
 
     public function listarAnioImporte($year){
         $query = $this->db->query(
-            "SELECT to_char(to_timestamp(date_part('month',fecha)::text,'MM'),'Month') AS concepto,
+            "SELECT date_part('month',r.fecha) AS concepto,
                     SUM(importe) AS cantidad
             FROM public.recaudaciones r
             INNER JOIN public.concepto c ON (r.id_concepto = c.id_concepto) 
@@ -106,11 +107,12 @@ class Pago extends CI_Model
                 date_part('year',fecha) = ".$year."
                 AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
             )
-            GROUP BY to_char(to_timestamp(date_part('month',fecha)::text,'MM'),'Month')"
+            GROUP BY date_part('month',r.fecha)"
         );
         $data = $query->result_array();
         $array_out = $this->formatoGrafico($data,'Monto');
-        return $array_out;
+        $f_array_out = $this->formatoFecha($array_out);
+        return $f_array_out;
     }
 
     public function registrosPorFechas($fecha_inicio, $fecha_fin){
@@ -175,6 +177,39 @@ class Pago extends CI_Model
             }
         }
         return $array_out;
+    }
+
+    private function formatoFecha($data){
+        if(count($data)>0){
+            foreach($data["labels"] as $clave => $mes){
+                if($mes == 1){
+                    $data["labels"][$clave] = "Enero";    
+                } elseif($mes == 2){
+                    $data["labels"][$clave] = "Febrero";
+                }elseif($mes == 3){
+                    $data["labels"][$clave] = "Marzo";
+                }elseif($mes == 4){
+                    $data["labels"][$clave] = "Abril";
+                }elseif($mes == 5){
+                    $data["labels"][$clave] = "Mayo";
+                }elseif($mes == 6){
+                    $data["labels"][$clave] = "Junio";
+                }elseif($mes == 7){
+                    $data["labels"][$clave] = "Julio";
+                }elseif($mes == 8){
+                    $data["labels"][$clave] = "Agosto";
+                }elseif($mes == 9){
+                    $data["labels"][$clave] = "Septiembre";
+                }elseif($mes == 10){
+                    $data["labels"][$clave] = "Octubre";
+                }elseif($mes == 11){
+                    $data["labels"][$clave] = "Noviembre";
+                }elseif($mes == 12){
+                    $data["labels"][$clave] = "Diciembre";
+                }
+            }
+        }
+        return $data;
     }
 }
 
