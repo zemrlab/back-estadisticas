@@ -116,7 +116,7 @@ class Pago extends CI_Model
     }
 
     public function registrosPorFechas($fecha_inicio, $fecha_fin){
-        $query = $this->db->query("SELECT c.concepto AS concepto, r.importe AS importe, trim(a.codigo) AS codigoAlumno, a.ape_nom AS nombreAlumno, r.fecha 
+        $query = $this->db->query("SELECT c.concepto AS concepto, r.importe AS importe, trim(a.codigo) AS codigoAlumno, a.ape_nom AS nombreAlumno, to_char(r.fecha,'DD-MM-YYYY') AS fecha 
             FROM public.recaudaciones r 
                 INNER JOIN public.concepto c 
                     ON (r.id_concepto = c.id_concepto)
@@ -129,14 +129,14 @@ class Pago extends CI_Model
                 AND extract(epoch FROM r.fecha) <= ".$fecha_fin."
                 AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
             )
-            ORDER BY r.fecha");
+            ORDER BY to_char(r.fecha,'DD-MM-YYYY')");
         $data = $query->result_array();
         $array_out = $this->formatoTabla($data);
         return $array_out;
     }
 
     public function registrosPorAnio($year){
-        $query=$this->db->query("SELECT c.concepto AS concepto, r.importe AS importe, trim(a.codigo) AS codigoAlumno, a.ape_nom AS nombreAlumno, r.fecha 
+        $query=$this->db->query("SELECT c.concepto AS concepto, r.importe AS importe, trim(a.codigo) AS codigoAlumno, a.ape_nom AS nombreAlumno, to_char(r.fecha,'DD-MM-YYYY') AS fecha
             FROM public.recaudaciones r 
                 INNER JOIN public.concepto c 
                     ON (r.id_concepto = c.id_concepto)
@@ -148,7 +148,7 @@ class Pago extends CI_Model
                 date_part('year',fecha) = ".$year."
                 AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
             )
-            ORDER BY r.fecha");
+            ORDER BY to_char(r.fecha,'DD-MM-YYYY')");
         $data = $query->result_array();
         $array_out = $this->formatoTabla($data);
         return $array_out;
