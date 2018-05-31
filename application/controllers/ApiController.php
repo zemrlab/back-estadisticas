@@ -78,6 +78,77 @@ class ApiController extends REST_Controller {
         }
         $this->response($array_out);
     }
+
+        //cambios diego
+        public function listaConceptos_get(){
+            $array_out = $this->pago->listarConceptos();
+            $this->response($array_out);
+        }
+
+        public function cantidadPorPeriodoAnio_get(){
+            $yearStart = $this->get("year_inicio");
+            $yearEnd = $this->get("year_fin");
+
+            if($yearStart == "" or $yearEnd == ""){
+                $data = array('result'=>'error');
+            }
+            else if($yearStart > $yearEnd){
+                $data = array('result'=>'error');
+            }
+            else{
+                $data = $this->pago->listarCantidadPeriodoAnual($yearStart,$yearEnd);
+            }
+            $this->response($data);
+        }
+
+        public function montoPorPeriodoAnio_get(){
+            $yearStart = $this->get("year_inicio");
+            $yearEnd = $this->get("year_fin");
+
+            if($yearStart == "" or $yearEnd == ""){
+                $data = array('result'=>'error');
+            }
+            else if($yearStart > $yearEnd){
+                $data = array('result'=>'error');
+            }
+            else{
+                $data = $this->pago->listarTotalPeriodoAnual($yearStart,$yearEnd);
+            }
+            $this->response($data);
+        }
+
+        public function cantidadPorPeriodoMes_get(){
+            $year = $this->get("year");
+            $startMonth = $this->get("mes_inicio");
+            $endMonth = $this->get("mes_fin");
+
+            if($startMonth == "" or $endMonth == "" or $year == ""){
+                $data = array('result'=>'error');
+            }
+            else if($startMonth > $endMonth){
+                $data = array('result'=>'error');
+            }
+            else{
+                $data = $this->pago->listarCantidadPeriodoMensual($year,$startMonth,$endMonth);
+            }
+            $this->response($data);
+        }
+        public function totalPorPeriodoMes_get(){
+            $year = $this->get("year");
+            $startMonth = $this->get("mes_inicio");
+            $endMonth = $this->get("mes_fin");
+
+            if($startMonth == "" or $endMonth == "" or $year == ""){
+                $data = array('result'=>'error');
+            }
+            else if($startMonth > $endMonth){
+                $data = array('result'=>'error');
+            }
+            else{
+                $data = $this->pago->listarTotalPeriodoMensual($year,$startMonth,$endMonth);
+            }
+            $this->response($data);
+        }
 }
 
 

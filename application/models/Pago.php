@@ -41,16 +41,16 @@ class Pago extends CI_Model
     }
 
     public function listarPorFechasCantidad($fecha_inicio, $fecha_fin){
-        $query = $this->db->query("SELECT c.concepto AS concepto, COUNT(r.id_concepto) AS cantidad 
-        FROM public.recaudaciones r 
-        INNER JOIN public.concepto c ON (r.id_concepto = c.id_concepto) 
+        $query = $this->db->query("SELECT c.concepto AS concepto, COUNT(r.id_concepto) AS cantidad
+        FROM public.recaudaciones r
+        INNER JOIN public.concepto c ON (r.id_concepto = c.id_concepto)
         INNER JOIN public.clase_pagos p ON (p.id_clase_pagos = c.id_clase_pagos)
-        WHERE ( 
-            extract(epoch FROM r.fecha) >= ".$fecha_inicio." 
+        WHERE (
+            extract(epoch FROM r.fecha) >= ".$fecha_inicio."
             AND extract(epoch FROM r.fecha) <= ".$fecha_fin."
             AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
-        ) 
-        GROUP BY r.id_concepto,c.concepto 
+        )
+        GROUP BY r.id_concepto,c.concepto
         ORDER BY c.concepto");
         $data = $query->result_array();
         $array_out = $this->formatoGrafico($data,'Importes');
@@ -58,16 +58,16 @@ class Pago extends CI_Model
     }
 
     public function listarPorFechasImporte($fecha_inicio, $fecha_fin){
-        $query = $this->db->query("SELECT c.concepto AS concepto, SUM(r.importe) AS cantidad 
-        FROM public.recaudaciones r 
-        INNER JOIN public.concepto c ON (r.id_concepto = c.id_concepto) 
+        $query = $this->db->query("SELECT c.concepto AS concepto, SUM(r.importe) AS cantidad
+        FROM public.recaudaciones r
+        INNER JOIN public.concepto c ON (r.id_concepto = c.id_concepto)
         INNER JOIN public.clase_pagos p ON (p.id_clase_pagos = c.id_clase_pagos)
-        WHERE ( 
-            extract(epoch FROM r.fecha) >= ".$fecha_inicio." 
+        WHERE (
+            extract(epoch FROM r.fecha) >= ".$fecha_inicio."
             AND extract(epoch FROM r.fecha) <= ".$fecha_fin."
             AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
-        ) 
-        GROUP BY r.id_concepto,c.concepto 
+        )
+        GROUP BY r.id_concepto,c.concepto
         ORDER BY c.concepto");
         $data = $query->result_array();
         $array_out = $this->formatoGrafico($data,'Monto');
@@ -79,7 +79,7 @@ class Pago extends CI_Model
             "SELECT date_part('month',r.fecha) AS concepto,
                     COUNT(r.importe) AS cantidad
             FROM public.recaudaciones r
-            INNER JOIN public.concepto c ON (r.id_concepto = c.id_concepto) 
+            INNER JOIN public.concepto c ON (r.id_concepto = c.id_concepto)
             INNER JOIN public.clase_pagos p ON (p.id_clase_pagos = c.id_clase_pagos)
             WHERE (
                 date_part('year',fecha) = ".$year."
@@ -101,7 +101,7 @@ class Pago extends CI_Model
             "SELECT date_part('month',r.fecha) AS concepto,
                     SUM(importe) AS cantidad
             FROM public.recaudaciones r
-            INNER JOIN public.concepto c ON (r.id_concepto = c.id_concepto) 
+            INNER JOIN public.concepto c ON (r.id_concepto = c.id_concepto)
             INNER JOIN public.clase_pagos p ON (p.id_clase_pagos = c.id_clase_pagos)
             WHERE (
                 date_part('year',fecha) = ".$year."
@@ -116,16 +116,16 @@ class Pago extends CI_Model
     }
 
     public function registrosPorFechas($fecha_inicio, $fecha_fin){
-        $query = $this->db->query("SELECT c.concepto AS concepto, r.importe AS importe, trim(a.codigo) AS codigoAlumno, a.ape_nom AS nombreAlumno, to_char(r.fecha,'DD-MM-YYYY') AS fecha 
-            FROM public.recaudaciones r 
-                INNER JOIN public.concepto c 
+        $query = $this->db->query("SELECT c.concepto AS concepto, r.importe AS importe, trim(a.codigo) AS codigoAlumno, a.ape_nom AS nombreAlumno, to_char(r.fecha,'DD-MM-YYYY') AS fecha
+            FROM public.recaudaciones r
+                INNER JOIN public.concepto c
                     ON (r.id_concepto = c.id_concepto)
-                INNER JOIN public.alumno a 
+                INNER JOIN public.alumno a
                     ON (r.id_alum = a.id_alum)
-                INNER JOIN public.clase_pagos p 
+                INNER JOIN public.clase_pagos p
                     ON (p.id_clase_pagos = c.id_clase_pagos)
-            WHERE ( 
-                extract(epoch FROM r.fecha) >= ".$fecha_inicio." 
+            WHERE (
+                extract(epoch FROM r.fecha) >= ".$fecha_inicio."
                 AND extract(epoch FROM r.fecha) <= ".$fecha_fin."
                 AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
             )
@@ -137,12 +137,12 @@ class Pago extends CI_Model
 
     public function registrosPorAnio($year){
         $query=$this->db->query("SELECT c.concepto AS concepto, r.importe AS importe, trim(a.codigo) AS codigoAlumno, a.ape_nom AS nombreAlumno, to_char(r.fecha,'DD-MM-YYYY') AS fecha
-            FROM public.recaudaciones r 
-                INNER JOIN public.concepto c 
+            FROM public.recaudaciones r
+                INNER JOIN public.concepto c
                     ON (r.id_concepto = c.id_concepto)
-                INNER JOIN public.alumno a 
-                    ON (r.id_alum = a.id_alum) 
-                INNER JOIN public.clase_pagos p 
+                INNER JOIN public.alumno a
+                    ON (r.id_alum = a.id_alum)
+                INNER JOIN public.clase_pagos p
                     ON (p.id_clase_pagos = c.id_clase_pagos)
             WHERE (
                 date_part('year',fecha) = ".$year."
@@ -152,6 +152,96 @@ class Pago extends CI_Model
         $data = $query->result_array();
         $array_out = $this->formatoTabla($data);
         return $array_out;
+    }
+
+    //DE AÑO A OTRO A AÑO CANTIDAD/TOTAL
+    public function listarCantidadPeriodoAnual($yearStart, $yearEnd){
+
+            $query = $this->db->query(
+            "SELECT date_part('year',r.fecha) AS concepto,COUNT(r.importe) AS cantidad
+            FROM public.recaudaciones r
+            INNER JOIN public.concepto c ON (r.id_concepto = c.id_concepto)
+            INNER JOIN public.clase_pagos p ON (p.id_clase_pagos = c.id_clase_pagos)
+            WHERE (
+                date_part('year',r.fecha) between ".$yearStart." and ".$yearEnd."
+                AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
+            )
+            GROUP BY date_part('year',r.fecha);"
+            );
+            $data = $query->result_array();
+            $array_out = $this->formatoGrafico($data,'Cantidad');
+            return $array_out;
+
+    }
+    public function listarTotalPeriodoAnual($yearStart, $yearEnd){
+
+            $query = $this->db->query(
+            "SELECT date_part('year',r.fecha) AS concepto,SUM(r.importe) AS cantidad
+            FROM public.recaudaciones r
+            INNER JOIN public.concepto c ON (r.id_concepto = c.id_concepto)
+            INNER JOIN public.clase_pagos p ON (p.id_clase_pagos = c.id_clase_pagos)
+            WHERE (
+                date_part('year',r.fecha) between ".$yearStart." and ".$yearEnd."
+                AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
+            )
+            GROUP BY date_part('year',r.fecha);"
+            );
+            $data = $query->result_array();
+            $array_out = $this->formatoGrafico($data,'Monto');
+            return $array_out;
+
+    }
+
+    //AÑO->mes inicial y fina
+    public function listarCantidadPeriodoMensual($year,$startMonth,$endMonth){
+            $query = $this->db->query(
+            "SELECT date_part('month',r.fecha) AS concepto,
+                    COUNT(r.importe) AS cantidad
+            FROM public.recaudaciones r
+            INNER JOIN public.concepto c ON (r.id_concepto = c.id_concepto)
+            INNER JOIN public.clase_pagos p ON (p.id_clase_pagos = c.id_clase_pagos)
+            WHERE (
+                date_part('year',r.fecha) = ".$year."
+                AND date_part('month',r.fecha) between ".$startMonth." and ".$endMonth."
+                AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
+            )
+            GROUP BY date_part('month',r.fecha);"
+            );
+            $data = $query->result_array();
+            $array_out = $this->formatoGrafico($data,'Cantidad');
+            $f_array_out = $this->formatoFecha($array_out);
+            return $f_array_out;
+
+    }
+
+    public function listarTotalPeriodoMensual($year,$startMonth,$endMonth){
+
+            $query = $this->db->query(
+            "SELECT date_part('month',r.fecha) AS concepto,
+                    SUM(r.importe) AS cantidad
+            FROM public.recaudaciones r
+            INNER JOIN public.concepto c ON (r.id_concepto = c.id_concepto)
+            INNER JOIN public.clase_pagos p ON (p.id_clase_pagos = c.id_clase_pagos)
+            WHERE (
+                date_part('year',r.fecha) = ".$year."
+                AND date_part('month',r.fecha) between ".$startMonth." and ".$endMonth."
+                AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
+            )
+            GROUP BY date_part('month',r.fecha);"
+            );
+            $data = $query->result_array();
+            $array_out = $this->formatoGrafico($data,'Cantidad');
+            $f_array_out = $this->formatoFecha($array_out);
+            return $f_array_out;
+
+    }
+
+    public function listarConceptos(){
+        $query = $this->db->query(
+            "select concepto from public.concepto where id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S' )"
+        );
+        $data = $query->result_array();
+        return $this->formatoConceptos($data);
     }
 
     private function formatoGrafico($data,$etiqueta){
@@ -183,7 +273,7 @@ class Pago extends CI_Model
         if(count($data)>0){
             foreach($data["labels"] as $clave => $mes){
                 if($mes == 1){
-                    $data["labels"][$clave] = "Enero";    
+                    $data["labels"][$clave] = "Enero";
                 } elseif($mes == 2){
                     $data["labels"][$clave] = "Febrero";
                 }elseif($mes == 3){
@@ -211,6 +301,17 @@ class Pago extends CI_Model
         }
         return $data;
     }
+
+    private function formatoConceptos($data){
+        $array_out = array("conceptos"=>array());
+        if(count($data)>0){
+            foreach ($data as $concepto) {
+                $array_out['conceptos'][] = $concepto['concepto'];
+            }
+        }
+        return $array_out;
+    }
+
 }
 
 
