@@ -13,30 +13,47 @@ class Usuarios extends CI_Model{
     public function loggin ($user,$pass,$tipo){
 
     	if($tipo == 'alumno'){
-    		$array_out = array("return"=>"unsupported");
+    		$query = $this->db->query("
+                SELECT COUNT(*) as CANTIDAD ,nom_alumno as nombre FROM public.alumno_programa 
+                WHERE  cod_alumno = '".$pass."' AND correo = '".$user."'
+                GROUP BY nom_alumno
+                ");
 
+            $data = $query->result_array();
+
+            
+            if($data[0]['cantidad'] == 1){
+                $array_out = array("return"=>"success","user"=>$data[0]['nombre']);
+            }
+            else{
+                $array_out = array("return"=>"failure");
+            }
     	}
     	else if( $tipo == 'docente'){
     		$query = $this->db->query("
-    			SELECT COUNT(*) as CANTIDAD FROM public.docente 
+    			SELECT nombres as nombre,COUNT(*) as CANTIDAD FROM public.docente 
     			WHERE  codigo = '".$pass."' AND email = '".$user."'
+                GROUP BY nombres
     			");
 
     		$data = $query->result_array();
 
     		
     		if($data[0]['cantidad'] == 1){
-    			$array_out = array("return"=>"success","user"=>$user);
+    			$array_out = array("return"=>"success","user"=>$data[0]['nombre']);
     		}
     		else{
-    			$array_out = array("return"=>"failure","user"=>$user);
+    			$array_out = array("return"=>"failure");
     		}
-    		
-    		$array_out = array("return"=>"success","user"=>$user);
     	}
     	
     	else if( $tipo == 'admin'){
-    		$array_out = array("return"=>"unsupported");
+            if($user == 'admin' && $pass == 'admin'){
+                $array_out = array("return"=>"success","user"=>"administrador");
+            }
+            else{
+                $array_out = array("return"=>"failure");
+            }
     	}
     	return $array_out;
     }
