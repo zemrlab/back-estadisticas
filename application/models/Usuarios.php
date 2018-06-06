@@ -14,15 +14,13 @@ class Usuarios extends CI_Model{
 
     	if($tipo == 'alumno'){
     		$query = $this->db->query("
-                SELECT COUNT(*) as CANTIDAD ,nom_alumno as nombre FROM public.alumno_programa 
-                WHERE  cod_alumno = '".$pass."' AND correo = '".$user."'
-                GROUP BY nom_alumno
-                ");
+                SELECT nom_alumno as nombre FROM public.alumno_programa
+                WHERE  cod_alumno = '".$pass."' AND correo = '".$user."'"
+            );
 
             $data = $query->result_array();
 
-            
-            if($data[0]['cantidad'] == 1){
+            if(count($data) == 1){
                 $array_out = array("return"=>"success","user"=>$data[0]['nombre']);
             }
             else{
@@ -31,22 +29,20 @@ class Usuarios extends CI_Model{
     	}
     	else if( $tipo == 'docente'){
     		$query = $this->db->query("
-    			SELECT nombres as nombre,COUNT(*) as CANTIDAD FROM public.docente 
-    			WHERE  codigo = '".$pass."' AND email = '".$user."'
-                GROUP BY nombres
-    			");
+    			SELECT nombres as nombre,COUNT(*) as CANTIDAD FROM public.docente
+    			WHERE  codigo = '".$pass."' AND email = '".$user."'"
+            );
 
     		$data = $query->result_array();
 
-    		
-    		if($data[0]['cantidad'] == 1){
+    		if(count($data) == 1){
     			$array_out = array("return"=>"success","user"=>$data[0]['nombre']);
     		}
     		else{
     			$array_out = array("return"=>"failure");
     		}
     	}
-    	
+
     	else if( $tipo == 'admin'){
             if($user == 'admin' && $pass == 'admin'){
                 $array_out = array("return"=>"success","user"=>"administrador");
