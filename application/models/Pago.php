@@ -155,8 +155,14 @@ class Pago extends CI_Model
     }
 
     //DE AÑO A OTRO A AÑO CANTIDAD/TOTAL
-    public function listarCantidadPeriodoAnual($yearStart, $yearEnd){
+    public function listarCantidadPeriodoAnual($yearStart, $yearEnd, $conceptos){
 
+            if (trim($conceptos) != ""){
+                $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";    
+            }
+            else{
+                $condicional = "";
+            }
             $query = $this->db->query(
             "SELECT date_part('year',r.fecha) AS concepto,COUNT(r.importe) AS cantidad
             FROM public.recaudaciones r
@@ -165,6 +171,7 @@ class Pago extends CI_Model
             WHERE (
                 date_part('year',r.fecha) between ".$yearStart." and ".$yearEnd."
                 AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
+                 ".$condicional." 
             )
             GROUP BY date_part('year',r.fecha);"
             );
@@ -173,7 +180,14 @@ class Pago extends CI_Model
             return $array_out;
 
     }
-    public function listarTotalPeriodoAnual($yearStart, $yearEnd){
+    public function listarTotalPeriodoAnual($yearStart, $yearEnd, $conceptos){
+
+            if (trim($conceptos) != ""){
+                $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";    
+            }
+            else{
+                $condicional = "";
+            }
 
             $query = $this->db->query(
             "SELECT date_part('year',r.fecha) AS concepto,SUM(r.importe) AS cantidad
@@ -183,6 +197,7 @@ class Pago extends CI_Model
             WHERE (
                 date_part('year',r.fecha) between ".$yearStart." and ".$yearEnd."
                 AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
+                 ".$condicional." 
             )
             GROUP BY date_part('year',r.fecha);"
             );
@@ -193,7 +208,14 @@ class Pago extends CI_Model
     }
 
     //AÑO->mes inicial y fina
-    public function listarCantidadPeriodoMensual($year,$startMonth,$endMonth){
+    public function listarCantidadPeriodoMensual($year,$startMonth,$endMonth, $conceptos){
+            if (trim($conceptos) != ""){
+                $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";    
+            }
+            else{
+                $condicional = "";
+            }
+
             $query = $this->db->query(
             "SELECT date_part('month',r.fecha) AS concepto,
                     COUNT(r.importe) AS cantidad
@@ -204,6 +226,7 @@ class Pago extends CI_Model
                 date_part('year',r.fecha) = ".$year."
                 AND date_part('month',r.fecha) between ".$startMonth." and ".$endMonth."
                 AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
+                 ".$condicional."
             )
             GROUP BY date_part('month',r.fecha);"
             );
@@ -214,7 +237,13 @@ class Pago extends CI_Model
 
     }
 
-    public function listarTotalPeriodoMensual($year,$startMonth,$endMonth){
+    public function listarTotalPeriodoMensual($year,$startMonth,$endMonth, $conceptos){
+            if (trim($conceptos) != ""){
+                $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";    
+            }
+            else{
+                $condicional = "";
+            }
 
             $query = $this->db->query(
             "SELECT date_part('month',r.fecha) AS concepto,
@@ -226,6 +255,7 @@ class Pago extends CI_Model
                 date_part('year',r.fecha) = ".$year."
                 AND date_part('month',r.fecha) between ".$startMonth." and ".$endMonth."
                 AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
+                 ".$condicional."
             )
             GROUP BY date_part('month',r.fecha);"
             );

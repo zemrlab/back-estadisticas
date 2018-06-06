@@ -88,6 +88,7 @@ class ApiController extends REST_Controller {
         public function cantidadPorPeriodoAnio_get(){
             $yearStart = $this->get("year_inicio");
             $yearEnd = $this->get("year_fin");
+            $conceptos = $this->get("conceptos");
 
             if($yearStart == "" or $yearEnd == ""){
                 $data = array('result'=>'error');
@@ -96,7 +97,7 @@ class ApiController extends REST_Controller {
                 $data = array('result'=>'error');
             }
             else{
-                $data = $this->pago->listarCantidadPeriodoAnual($yearStart,$yearEnd);
+                $data = $this->pago->listarCantidadPeriodoAnual($yearStart,$yearEnd, $conceptos);
             }
             $this->response($data);
         }
@@ -104,6 +105,7 @@ class ApiController extends REST_Controller {
         public function montoPorPeriodoAnio_get(){
             $yearStart = $this->get("year_inicio");
             $yearEnd = $this->get("year_fin");
+            $conceptos = $this->get("conceptos");
 
             if($yearStart == "" or $yearEnd == ""){
                 $data = array('result'=>'error');
@@ -112,7 +114,7 @@ class ApiController extends REST_Controller {
                 $data = array('result'=>'error');
             }
             else{
-                $data = $this->pago->listarTotalPeriodoAnual($yearStart,$yearEnd);
+                $data = $this->pago->listarTotalPeriodoAnual($yearStart,$yearEnd, $conceptos);
             }
             $this->response($data);
         }
@@ -121,6 +123,7 @@ class ApiController extends REST_Controller {
             $year = $this->get("year");
             $startMonth = $this->get("mes_inicio");
             $endMonth = $this->get("mes_fin");
+            $conceptos = $this->get("conceptos");
 
             if($startMonth == "" or $endMonth == "" or $year == ""){
                 $data = array('result'=>'error');
@@ -129,7 +132,7 @@ class ApiController extends REST_Controller {
                 $data = array('result'=>'error');
             }
             else{
-                $data = $this->pago->listarCantidadPeriodoMensual($year,$startMonth,$endMonth);
+                $data = $this->pago->listarCantidadPeriodoMensual($year,$startMonth,$endMonth , $conceptos);
             }
             $this->response($data);
         }
@@ -137,6 +140,7 @@ class ApiController extends REST_Controller {
             $year = $this->get("year");
             $startMonth = $this->get("mes_inicio");
             $endMonth = $this->get("mes_fin");
+            $conceptos = $this->get("conceptos");
 
             if($startMonth == "" or $endMonth == "" or $year == ""){
                 $data = array('result'=>'error');
@@ -145,7 +149,7 @@ class ApiController extends REST_Controller {
                 $data = array('result'=>'error');
             }
             else{
-                $data = $this->pago->listarTotalPeriodoMensual($year,$startMonth,$endMonth);
+                $data = $this->pago->listarTotalPeriodoMensual($year,$startMonth,$endMonth, $conceptos);
             }
             $this->response($data);
         }
