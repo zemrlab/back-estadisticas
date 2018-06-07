@@ -15,7 +15,6 @@ class LoginController extends REST_Controller {
         $pass = $this->post('pass');
         $tipo = $this->post('tipo');
 
-
         if($user == '' || $pass == '' || $tipo == ''){
             $array_out = array("result"=>"error");
         }
