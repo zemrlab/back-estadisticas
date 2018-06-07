@@ -9,12 +9,11 @@ class LoginController extends REST_Controller {
         $this->load->model('usuarios');
     }
 
-    public function index_post(){
+    public function index_get(){
 
-        $user = $this->post('user');
-        $pass = $this->post('pass');
-        $tipo = $this->post('tipo');
-
+        $user = $this->get('user');
+        $pass = $this->get('pass');
+        $tipo = $this->get('tipo');
 
         if($user == '' || $pass == '' || $tipo == ''){
             $array_out = array("result"=>"error");
