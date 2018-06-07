@@ -174,7 +174,7 @@ class Pago extends CI_Model
         return $array_out;
     }
 
-    public function registrosPorAnio($year,$conceptos){
+    public function registrosPorAnio($yearStart, $yearEnd ,$conceptos){
         if (trim($conceptos) != ""){
             $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";    
         }
@@ -190,7 +190,7 @@ class Pago extends CI_Model
                 INNER JOIN public.clase_pagos p
                     ON (p.id_clase_pagos = c.id_clase_pagos)
             WHERE (
-                date_part('year',fecha) = ".$year."
+                date_part('year',r.fecha) between ".$yearStart." and ".$yearEnd." 
                 AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
                  ".$condicional." 
             )
