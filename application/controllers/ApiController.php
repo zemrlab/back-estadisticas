@@ -14,11 +14,12 @@ class ApiController extends REST_Controller {
     public function index_get(){
         $fecha_inicio = $this->get('inicio');
         $fecha_fin = $this->get('fin');
+        $conceptos = $this->get('conceptos');
         if($fecha_inicio == '' || $fecha_fin == ''){
             $array_out = array("result"=>"error");
         }
         else{
-            $array_out = $this->pago->listarPorFechasCantidad($fecha_inicio, $fecha_fin);
+            $array_out = $this->pago->listarPorFechasCantidad($fecha_inicio, $fecha_fin,$conceptos);
         }
         $this->response($array_out);
     }
@@ -26,32 +27,35 @@ class ApiController extends REST_Controller {
     public function importe_get(){
         $fecha_inicio = $this->get('inicio');
         $fecha_fin = $this->get('fin');
+        $conceptos = $this->get('conceptos');
         if($fecha_inicio == '' || $fecha_fin == ''){
             $array_out = array("result"=>"error");
         }
         else{
-            $array_out = $this->pago->listarPorFechasImporte($fecha_inicio, $fecha_fin);
+            $array_out = $this->pago->listarPorFechasImporte($fecha_inicio, $fecha_fin,$conceptos);
         }
         $this->response($array_out);
     }
 
     public function devolverAnioImporte_get(){
         $year = $this->get("year");
+        $conceptos = $this->get("conceptos");
         if($year == ""){
             $array_out = array("result"=>"error");
         }
         else{
-            $array_out = $this->pago->listarAnioImporte($year);
+            $array_out = $this->pago->listarAnioImporte($year,$conceptos);
         }
         $this->response($array_out);
     }
     public function devolverAnioCantidad_get(){
         $year = $this->get("year");
+        $conceptos = $this->get("conceptos");
         if($year == ""){
             $array_out = array("result"=>"error");
         }
         else{
-            $array_out = $this->pago->listarAnioCantidad($year);
+            $array_out = $this->pago->listarAnioCantidad($year,$conceptos);
         }
         $this->response($array_out);
     }
@@ -59,24 +63,44 @@ class ApiController extends REST_Controller {
     public function tablaFechas_get(){
         $fecha_inicio = $this->get('inicio');
         $fecha_fin = $this->get('fin');
+        $conceptos = $this->get("conceptos");
         if($fecha_inicio == '' || $fecha_fin == ''){
             $array_out = array("result"=>"error1");
         }
         else{
-            $array_out = $this->pago->registrosPorFechas($fecha_inicio, $fecha_fin);
+            $array_out = $this->pago->registrosPorFechas($fecha_inicio, $fecha_fin,$conceptos);
         }
         $this->response($array_out);
     }
 
     public function tablaYear_get(){
         $year = $this->get("year");
+        $conceptos = $this->get("conceptos");
         if($year == ""){
             $array_out = array("result"=>"error");
         }
         else{
-            $array_out = $this->pago->registrosPorAnio($year);
+            $array_out = $this->pago->registrosPorAnio($year,$conceptos);
         }
         $this->response($array_out);
+    }
+
+    public function tablaMonth_get(){
+        $year = $this->get("year");
+        $startMonth = $this->get("mes_inicio");
+        $endMonth = $this->get("mes_fin");
+        $conceptos = $this->get("conceptos");
+
+        if($startMonth == "" or $endMonth == "" or $year == ""){
+            $data = array('result'=>'error');
+        }
+        else if($startMonth > $endMonth){
+            $data = array('result'=>'error');
+        }
+        else{
+            $data = $this->pago->registrosPorMes($year,$startMonth,$endMonth, $conceptos);
+        }
+        $this->response($data);
     }
 
         //cambios diego
