@@ -25,7 +25,7 @@ class Usuarios extends CI_Model{
                 $array_out = array("return"=>"success","id"=>$data[0]['id'],"user"=>$data[0]['nombre']);
                 $query = $this->db->query("
                     SELECT id_mod as modulos FROM public.perfil_modulo
-                    WHERE id_perfil = 4 
+                    WHERE id_perfil = 4
                 ");
                 $array_out['modulos'] = $query->result_array();
             }
@@ -47,7 +47,7 @@ class Usuarios extends CI_Model{
     			$array_out = array("return"=>"success","id"=>$data[0]['id'],"user"=>$data[0]['nombre']);
                 $query = $this->db->query("
                     SELECT id_mod as modulos FROM public.perfil_modulo
-                    WHERE id_perfil = 3 
+                    WHERE id_perfil = 3
                 ");
                 $array_out['modulos'] = $query->result_array();
     		}
@@ -69,7 +69,7 @@ class Usuarios extends CI_Model{
                 $array_out = array("return"=>"success","user"=>$data[0]['nombre']);
                 $query = $this->db->query("
                     SELECT id_mod as modulos FROM public.perfil_modulo
-                    WHERE id_perfil = 2 
+                    WHERE id_perfil = 2
                 ");
                 $array_out['modulos'] = $query->result_array();
             }
@@ -79,11 +79,11 @@ class Usuarios extends CI_Model{
         }
 
     	else if( $tipo == 'admin'){
-            if($user == 'admin' && $pass == 'admin'){
+            if($user == 'admin@unmsm.edu.pe' && $pass == 'admin'){
                 $array_out = array("return"=>"success","user"=>"administrador");
                 $query = $this->db->query("
                     SELECT id_mod as modulos FROM public.perfil_modulo
-                    WHERE id_perfil = 1 
+                    WHERE id_perfil = 1
                 ");
                 $array_out['modulos'] = $query->result_array();
             }
