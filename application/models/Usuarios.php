@@ -12,7 +12,7 @@ class Usuarios extends CI_Model{
 
     public function loggin ($user,$pass,$tipo){
 
-    	if($tipo == 'alumno'){
+    	if($tipo == 'Alumno'){
     		$query = $this->db->query("
                 SELECT nom_alumno as nombre , cod_alumno as id FROM public.alumno_programa
                 WHERE  cod_alumno = '".$pass."' AND lower(correo) = '".$user."'
@@ -35,7 +35,7 @@ class Usuarios extends CI_Model{
 
 
     	}
-    	else if( $tipo == 'docente'){
+    	else if( $tipo == 'Docente'){
     		$query = $this->db->query("
     			SELECT nombres as nombre, id FROM public.docente
     			WHERE  codigo = '".$pass."' AND lower(email) = '".$user."'"
@@ -57,7 +57,7 @@ class Usuarios extends CI_Model{
     	}
 
 
-        else if ( $tipo == 'administrativo'){
+        else if ( $tipo == 'Administrativo'){
             $query = $this->db->query("
                 SELECT u.user_name as nombre, u.pass, u.id_usuario as id FROM usuario as u
                 INNER JOIN usuario_perfil p on (u.id_usuario = p.id_usuario)
@@ -80,7 +80,7 @@ class Usuarios extends CI_Model{
             }
         }
 
-    	else if( $tipo == 'admin'){
+    	else if( $tipo == 'Administrador'){
              $query = $this->db->query("
                 SELECT u.user_name as nombre, u.pass, u.id_usuario as id FROM usuario as u
                 INNER JOIN usuario_perfil p on (u.id_usuario = p.id_usuario)
@@ -105,5 +105,12 @@ class Usuarios extends CI_Model{
     	}
 
     	return $array_out;
+    }
+
+    public function getModulos(){
+        $query = $this->db->query("
+            SELECT nombre_tipo as modulo FROM public.perfil
+        ");
+        return $query->result_array();
     }
 }

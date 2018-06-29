@@ -23,6 +23,10 @@ class LoginController extends REST_Controller {
         }
         $this->response($array_out);
     }
+
+	public function modulos_get(){
+		$this->response($this->usuarios->getModulos());
+	}
 }
 
  ?>
