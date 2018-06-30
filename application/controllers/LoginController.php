@@ -9,7 +9,7 @@ class LoginController extends REST_Controller {
         $this->load->model('usuarios');
     }
 
-    public function index_post(){
+    public function index_post(){ //autentificar usuario
 
         $user = $this->post('user');
         $pass = $this->post('pass');
@@ -24,7 +24,7 @@ class LoginController extends REST_Controller {
         $this->response($array_out);
     }
 
-	public function modulos_get(){
+	public function modulos_get(){ //listar perfiles
 		$this->response($this->usuarios->getModulos());
 	}
 }
