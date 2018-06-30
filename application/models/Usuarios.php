@@ -12,7 +12,7 @@ class Usuarios extends CI_Model{
 
     public function loggin ($user,$pass,$tipo){
 
-    	if($tipo == 'Alumno'){
+    	if($tipo == 'alumno'){
     		$query = $this->db->query("
                 SELECT nom_alumno as nombre , cod_alumno as id FROM public.alumno_programa
                 WHERE  cod_alumno = '".$pass."' AND lower(correo) = '".$user."'
@@ -35,7 +35,7 @@ class Usuarios extends CI_Model{
 
 
     	}
-    	else if( $tipo == 'Docente'){
+    	else if( $tipo == 'docente'){
     		$query = $this->db->query("
     			SELECT nombres as nombre, id FROM public.docente
     			WHERE  codigo = '".$pass."' AND lower(email) = '".$user."'"
@@ -57,7 +57,7 @@ class Usuarios extends CI_Model{
     	}
 
 
-        else if ( $tipo == 'Administrativo'){
+        else if ( $tipo == 'administrativo'){
             $query = $this->db->query("
                 SELECT u.user_name as nombre, u.pass, u.id_usuario as id FROM usuario as u
                 INNER JOIN usuario_perfil p on (u.id_usuario = p.id_usuario)
@@ -80,7 +80,7 @@ class Usuarios extends CI_Model{
             }
         }
 
-    	else if( $tipo == 'Administrador'){
+    	else if( $tipo == 'admin'){
              $query = $this->db->query("
                 SELECT u.user_name as nombre, u.pass, u.id_usuario as id FROM usuario as u
                 INNER JOIN usuario_perfil p on (u.id_usuario = p.id_usuario)
