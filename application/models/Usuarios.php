@@ -12,7 +12,7 @@ class Usuarios extends CI_Model{
 
     public function loggin ($user,$pass,$tipo){
 
-    	if($tipo == 'alumno'){  // verificar usuario y pass, si existe devolver modulos asignados
+    	if($tipo == 'Alumno'){  // verificar usuario y pass, si existe devolver modulos asignados
     		$query = $this->db->query("
                 SELECT nom_alumno as nombre , cod_alumno as id FROM public.alumno_programa
                 WHERE  cod_alumno = '".$pass."' AND lower(correo) = '".$user."'
@@ -35,7 +35,7 @@ class Usuarios extends CI_Model{
 
 
     	}
-    	else if( $tipo == 'docente'){ // verificar usuario y pass, si existe devolver modulos asignados
+    	else if( $tipo == 'Docente'){ // verificar usuario y pass, si existe devolver modulos asignados
     		$query = $this->db->query("
     			SELECT nombres as nombre, id FROM public.docente
     			WHERE  codigo = '".$pass."' AND lower(email) = '".$user."'"
@@ -57,7 +57,7 @@ class Usuarios extends CI_Model{
     	}
 
 
-        else if ( $tipo == 'administrativo'){ //verificar usuario, pass y de perfil, si existe devolver modulos asignados
+        else if ( $tipo == 'Administrativo'){ //verificar usuario, pass y de perfil, si existe devolver modulos asignados
             $query = $this->db->query("
                 SELECT u.user_name as nombre, u.pass, u.id_usuario as id FROM usuario as u
                 INNER JOIN usuario_perfil p on (u.id_usuario = p.id_usuario)
@@ -80,7 +80,7 @@ class Usuarios extends CI_Model{
             }
         }
 
-    	else if( $tipo == 'admin'){ //verificar usuario, pass y de perfil, si existe devolver modulos asignados
+    	else if( $tipo == 'Administrador'){ //verificar usuario, pass y de perfil, si existe devolver modulos asignados
              $query = $this->db->query("
                 SELECT u.user_name as nombre, u.pass, u.id_usuario as id FROM usuario as u
                 INNER JOIN usuario_perfil p on (u.id_usuario = p.id_usuario)
