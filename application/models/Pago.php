@@ -42,7 +42,7 @@ class Pago extends CI_Model
 
     public function listarPorFechasCantidad($fecha_inicio, $fecha_fin, $conceptos){
         if (trim($conceptos) != ""){
-            $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";    
+            $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";
         }
         else{
             $condicional = "";
@@ -55,8 +55,8 @@ class Pago extends CI_Model
         WHERE (
             extract(epoch FROM r.fecha) >= ".$fecha_inicio."
             AND extract(epoch FROM r.fecha) <= ".$fecha_fin."
-            AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S') 
-             ".$condicional." 
+            AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
+             ".$condicional."
         )
         GROUP BY r.id_concepto,c.concepto
         ORDER BY c.concepto");
@@ -67,7 +67,7 @@ class Pago extends CI_Model
 
     public function listarPorFechasImporte($fecha_inicio, $fecha_fin, $conceptos){
         if (trim($conceptos) != ""){
-            $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";    
+            $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";
         }
         else{
             $condicional = "";
@@ -81,7 +81,7 @@ class Pago extends CI_Model
             extract(epoch FROM r.fecha) >= ".$fecha_inicio."
             AND extract(epoch FROM r.fecha) <= ".$fecha_fin."
             AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
-             ".$condicional." 
+             ".$condicional."
         )
         GROUP BY r.id_concepto,c.concepto
         ORDER BY c.concepto");
@@ -92,7 +92,7 @@ class Pago extends CI_Model
 
     public function listarAnioCantidad($year, $conceptos){
         if (trim($conceptos) != ""){
-            $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";    
+            $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";
         }
         else{
             $condicional = "";
@@ -107,7 +107,7 @@ class Pago extends CI_Model
             WHERE (
                 date_part('year',fecha) = ".$year."
                 AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
-                 ".$condicional." 
+                 ".$condicional."
             )
             GROUP BY date_part('month',r.fecha)"
         );
@@ -122,7 +122,7 @@ class Pago extends CI_Model
 
     public function listarAnioImporte($year, $conceptos){
         if (trim($conceptos) != ""){
-            $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";    
+            $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";
         }
         else{
             $condicional = "";
@@ -137,7 +137,7 @@ class Pago extends CI_Model
             WHERE (
                 date_part('year',fecha) = ".$year."
                 AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
-                 ".$condicional." 
+                 ".$condicional."
             )
             GROUP BY date_part('month',r.fecha)"
         );
@@ -149,7 +149,7 @@ class Pago extends CI_Model
 
     public function registrosPorFechas($fecha_inicio, $fecha_fin,$conceptos){
         if (trim($conceptos) != ""){
-            $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";    
+            $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";
         }
         else{
             $condicional = "";
@@ -166,9 +166,9 @@ class Pago extends CI_Model
                 extract(epoch FROM r.fecha) >= ".$fecha_inicio."
                 AND extract(epoch FROM r.fecha) <= ".$fecha_fin."
                 AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
-                 ".$condicional." 
+                 ".$condicional."
             )
-            ORDER BY to_char(r.fecha,'DD-MM-YYYY')");
+            ORDER BY to_char(r.fecha,'YYYY-MM-DD')");
         $data = $query->result_array();
         $array_out = $this->formatoTabla($data);
         return $array_out;
@@ -176,7 +176,7 @@ class Pago extends CI_Model
 
     public function registrosPorAnio($yearStart, $yearEnd ,$conceptos){
         if (trim($conceptos) != ""){
-            $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";    
+            $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";
         }
         else{
             $condicional = "";
@@ -190,18 +190,18 @@ class Pago extends CI_Model
                 INNER JOIN public.clase_pagos p
                     ON (p.id_clase_pagos = c.id_clase_pagos)
             WHERE (
-                date_part('year',r.fecha) between ".$yearStart." and ".$yearEnd." 
+                date_part('year',r.fecha) between ".$yearStart." and ".$yearEnd."
                 AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
-                 ".$condicional." 
+                 ".$condicional."
             )
-            ORDER BY to_char(r.fecha,'DD-MM-YYYY')");
+            ORDER BY to_char(r.fecha,'YYYY-MM-DD')");
         $data = $query->result_array();
         $array_out = $this->formatoTabla($data);
         return $array_out;
     }
     public function registrosPorMes ($year,$startMonth,$endMonth, $conceptos){
         if (trim($conceptos) != ""){
-            $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";    
+            $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";
         }
         else{
             $condicional = "";
@@ -219,8 +219,8 @@ class Pago extends CI_Model
             AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
              ".$condicional."
         )
-        ORDER BY to_char(r.fecha,'DD-MM-YYYY')");
-        
+        ORDER BY to_char(r.fecha,'YYYY-MM-DD')");
+
         $data = $query->result_array();
         $array_out = $this->formatoTabla($data);
         return $array_out;
@@ -230,7 +230,7 @@ class Pago extends CI_Model
     public function listarCantidadPeriodoAnual($yearStart, $yearEnd, $conceptos){
 
         if (trim($conceptos) != ""){
-            $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";    
+            $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";
         }
         else{
             $condicional = "";
@@ -243,7 +243,7 @@ class Pago extends CI_Model
         WHERE (
             date_part('year',r.fecha) between ".$yearStart." and ".$yearEnd."
             AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
-             ".$condicional." 
+             ".$condicional."
         )
         GROUP BY date_part('year',r.fecha);"
         );
@@ -255,7 +255,7 @@ class Pago extends CI_Model
     public function listarTotalPeriodoAnual($yearStart, $yearEnd, $conceptos){
 
         if (trim($conceptos) != ""){
-            $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";    
+            $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";
         }
         else{
             $condicional = "";
@@ -269,7 +269,7 @@ class Pago extends CI_Model
         WHERE (
             date_part('year',r.fecha) between ".$yearStart." and ".$yearEnd."
             AND p.id_clase_pagos in (SELECT distinct (id_clase_pagos) FROM configuracion where estado = 'S')
-             ".$condicional." 
+             ".$condicional."
         )
         GROUP BY date_part('year',r.fecha);"
         );
@@ -282,7 +282,7 @@ class Pago extends CI_Model
     //AÑO->mes inicial y fina
     public function listarCantidadPeriodoMensual($year,$startMonth,$endMonth, $conceptos){
         if (trim($conceptos) != ""){
-            $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";    
+            $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";
         }
         else{
             $condicional = "";
@@ -311,7 +311,7 @@ class Pago extends CI_Model
 
     public function listarTotalPeriodoMensual($year,$startMonth,$endMonth, $conceptos){
         if (trim($conceptos) != ""){
-            $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";    
+            $condicional = "AND c.concepto::integer in (".str_replace ("|",",",$conceptos).")";
         }
         else{
             $condicional = "";
