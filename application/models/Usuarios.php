@@ -58,11 +58,13 @@ class Usuarios extends CI_Model{
 
 
         else if ( $tipo == 'Administrativo'){ //verificar usuario, pass y de perfil, si existe devolver modulos asignados
+            
+            
             $query = $this->db->query("
                 SELECT u.user_name as nombre, u.pass, u.id_usuario as id FROM usuario as u
                 INNER JOIN usuario_perfil p on (u.id_usuario = p.id_usuario)
                 INNER JOIN perfil i on (i.id_perfil = p.id_perfil)
-                WHERE i.id_perfil = 2 AND lower(u.user_name) = '".$user."' AND u.pass = '".$pass."'"
+                WHERE i.id_perfil = 2 AND u.id_usuario= verificar_password('".$user."','".$pass."')"
             );
 
             $data = $query->result_array();
@@ -72,22 +74,22 @@ class Usuarios extends CI_Model{
                 $query = $this->db->query("
                     SELECT id_mod as modulos FROM public.usuario_modulo
                     WHERE id_usuario = ".$data[0]['id']." ORDER BY id_mod;
-                ");
+                    ");
                 $array_out['modulos'] = $query->result_array();
             }
             else{
                 $array_out = array("return"=>"failure");
             }
-        }
+         }
 
     	else if( $tipo == 'Administrador'){ //verificar usuario, pass y de perfil, si existe devolver modulos asignados
-             $query = $this->db->query("
-                SELECT u.user_name as nombre, u.pass, u.id_usuario as id FROM usuario as u
-                INNER JOIN usuario_perfil p on (u.id_usuario = p.id_usuario)
-                INNER JOIN perfil i on (i.id_perfil = p.id_perfil)
-                WHERE i.id_perfil = 1 AND lower(u.user_name) = '".$user."' AND u.pass = '".$pass."'"
+            
+            $query = $this->db->query("
+            SELECT u.user_name as nombre, u.pass, u.id_usuario as id FROM usuario as u
+            INNER JOIN usuario_perfil p on (u.id_usuario = p.id_usuario)
+            INNER JOIN perfil i on (i.id_perfil = p.id_perfil)
+            WHERE i.id_perfil = 1 AND u.id_usuario= verificar_password('".$user."','".$pass."')"
             );
-
 
             $data = $query->result_array();
 
@@ -98,7 +100,7 @@ class Usuarios extends CI_Model{
                     WHERE id_usuario = ".$data[0]['id']." ORDER BY id_mod;
                 ");
                 $array_out['modulos'] = $query->result_array();
-            }
+                }
             else{
                 $array_out = array("return"=>"failure");
             }
